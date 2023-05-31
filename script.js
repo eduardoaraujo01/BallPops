@@ -42,8 +42,8 @@ function addBola(i) {
     let width = Math.floor(Math.random() * window.innerWidth - 50);
     let height = window.innerHeight;
 
-    if (width < 0) {
-        width = 0;
+    if (width < 5) {
+        width = 5;
     }
 
     bolaDiv.id = `${width}-${height}-${index}-${i}`;
@@ -66,7 +66,6 @@ function addBola(i) {
 }
 function remove(elemento, intervalo){
     if (elemento) {
-        console.log(elemento)
         clearInterval(intervalo);
         window.document.body.removeChild(elemento);
     }
