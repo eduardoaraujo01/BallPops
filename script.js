@@ -1,45 +1,84 @@
-var score = 0;
-function addBola() {
-    var cores = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF"];
+var totalScore = 0;
+function addBola(i) {
+    const bolas = [
+        {
+            color: "#FF0000",
+            score: 1,
+            time: 25,
+        },
+        {
+            color: "#00FF00",
+            score: 2,
+            time: 20,
+        },
+        {
+            color: "#0000FF",
+            score: 3,
+            time: 15,
+        },
+        {
+            color: "#FFFF00",
+            score: 4,
+            time: 10,
+        },
+        {
+            color: "#FF00FF",
+            score: 5,
+            time: 5,
+        },
+        {
+            color: "#00FFFF",
+            score: 6,
+            time: 1,
+        },
+    ];
 
-    var bola = document.createElement("div");
-    bola.setAttribute("class", "bola");
+    const index = Math.floor(Math.random() * bolas.length);
+    const bola = bolas[index]
 
-    var p1 = Math.floor(Math.random() * 500);
-    var p2 = Math.floor(Math.random() * 400);
+    const bolaDiv = document.createElement("div");
+    bolaDiv.setAttribute("class", "bola");
 
-    var indeCor = Math.floor(Math.random() * cores.length);
+    let width = Math.floor(Math.random() * window.innerWidth - 50);
+    let height = window.innerHeight;
 
-    bola.style.backgroundColor = cores[indeCor];
+    if (width < 5) {
+        width = 5;
+    }
 
-    bola.setAttribute("style", "left:"+p1+"px;top:"+p2+"px;background-color:"+cores[indeCor]);
-    bola.setAttribute("onclick", "estourar(this)");
+    bolaDiv.id = `${width}-${height}-${index}-${i}`;
+    bolaDiv.style.backgroundColor = bola.color;
+    bolaDiv.style.left = `${width}px`;
+    bolaDiv.style.top = `${height}px`;
 
-    document.body.appendChild(bola);
-    setTimeout(function () {
-        remove(bola);
-    }, 4000);
+    document.body.appendChild(bolaDiv);
 
-    intervalo = setInterval(function () {
-        p2 -= 1; // Velocidade do movimento vertical (pode ser ajustada)
-        bola.style.top = p2 + "px";
+    const intervalo = setInterval(function () {
+        height -= 1; // Velocidade do movimento vertical (pode ser ajustada)
+        bolaDiv.style.top = height + "px";
 
-        if (p2 <= 0) {
-            remove(bola);
-            clearInterval(intervalo);
+        if (height === 0) {
+            remove(bolaDiv, intervalo);
         }
-    }, 5);
+    }, bola.time);
+
+    bolaDiv.addEventListener("click", (event) => estourar(bolaDiv, bola, intervalo));
 }
-function remove(elemento){
-    document.body.removeChild(elemento);
+function remove(elemento, intervalo){
+    if (elemento) {
+        clearInterval(intervalo);
+        window.document.body.removeChild(elemento);
+    }
 }
-function estourar(elemento){
-    document.body.removeChild(elemento);
-    atualizarScore();
+function estourar(elemento, bola, intervalo){
+    if (elemento) {
+        remove(elemento, intervalo);
+        atualizarScore(bola.score);
+    }
 }
-function atualizarScore(){
-    score++;
-    document.getElementById("score").textContent = "Score:" + score;
+function atualizarScore(score){
+    totalScore += score;
+    document.getElementById("score").textContent = "Score:" + totalScore;
 }
 function criarScoreboard() {
     var scoreboard = document.createElement("div");
@@ -51,6 +90,9 @@ function criarScoreboard() {
 }
 function iniciar(){
     criarScoreboard();
-    // setInterval(addBola, 1000);
-
+    let index = 0;
+    setInterval(() => {
+        index++;
+        addBola(index)
+    }, 1000);
 }
